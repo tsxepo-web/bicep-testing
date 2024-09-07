@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "PYo0mTMQFs4DEFsuLdpjCxF4IQQnefCGyJMNQHq9xaA=",
+  "Source": "bicep-testing",
+  "BasePath": "_content/bicep-testing",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
