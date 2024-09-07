@@ -1,31 +1,22 @@
-name: Azure Bicep Deployment
-
-on:
-  push:
-    branches:
-      - main # Triggers deployment on push to the main branch
-  workflow_dispatch: # Allows manual triggers
-
+name: Deploy Bicep file
+on: [push]
 jobs:
-  deploy-to-azure:
+  build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2 # Checks out the code from your repository
+        uses: actions/checkout@main
 
-      - name: Set up Azure CLI
-        uses: azure/cli@v1 # Sets up the Azure CLI in the workflow
-
-      - name: Login to Azure
+      - name: Log into Azure
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }} # Store Azure credentials in GitHub Secrets
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy Bicep file
-        run: |
-          az deployment group create \
-            --resource-group az204-bicep-rg \
-            --template-file bicep/main.bicep \
-            --parameters repositoryUrl=https://github.com/${{ github.repository }} \
-            --parameters branch=${{ github.ref_name }}
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+          resourceGroupName: ${{ secrets.AZURE_RG }}
+          template: bicep/main.bicep
+          parameters: "storagePrefix=mystore storageSKU=Standard_LRS"
+          failOnStdErr: false
