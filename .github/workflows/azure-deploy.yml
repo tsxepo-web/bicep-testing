@@ -1,0 +1,31 @@
+name: Azure Bicep Deployment
+
+on:
+  push:
+    branches:
+      - main # Triggers deployment on push to the main branch
+  workflow_dispatch: # Allows manual triggers
+
+jobs:
+  deploy-to-azure:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2 # Checks out the code from your repository
+
+      - name: Set up Azure CLI
+        uses: azure/cli@v1 # Sets up the Azure CLI in the workflow
+
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }} # Store Azure credentials in GitHub Secrets
+
+      - name: Deploy Bicep file
+        run: |
+          az deployment group create \
+            --resource-group az204-bicep-rg \
+            --template-file bicep/main.bicep \
+            --parameters repositoryUrl=https://github.com/${{ github.repository }} \
+            --parameters branch=${{ github.ref_name }}
