@@ -1,9 +1,6 @@
 @description('Which Pricing tier our App Service Plan to')
 param skuName string = 'F1'
 
-@description('How many instances of our app service will be scaled out to')
-param skuCapacity int = 1
-
 @description('Location for all resources.')
 param location string = resourceGroup().location
 
@@ -14,6 +11,8 @@ param appName string = uniqueString(resourceGroup().id)
 param repositoryUrl string
 param branch string = 'main'
 
+param linuxFxVersion string = 'DOTNETCORE|8.0'
+
 var appServicePlanName = toLower('asp-${appName}')
 var webSiteName = toLower('wapp-${appName}')
 var appInsightName = toLower('appi-${appName}')
@@ -21,31 +20,23 @@ var appInsightName = toLower('appi-${appName}')
 resource appServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = {
   name: appServicePlanName
   location: location
+  properties: {
+    reserved: true
+  }
   sku: {
     name: skuName
-    capacity: skuCapacity
   }
-  tags: {
-    displayName: 'HostingPlan'
-    ProjectName: appName
-  }
+  kind: 'linux'
 }
 
 resource appService 'Microsoft.Web/sites@2023-12-01' = {
   name: webSiteName
   location: location
-  identity: {
-    type: 'SystemAssigned'
-  }
-  tags: {
-    displayName: 'Website'
-    ProjectName: appName
-  }
   properties: {
     serverFarmId: appServicePlan.id
     httpsOnly: true
     siteConfig: {
-      minTlsVersion: '1.2'
+      linuxFxVersion: linuxFxVersion
     }
   }
 }
@@ -56,17 +47,6 @@ resource appServiceLogging 'Microsoft.Web/sites/config@2023-12-01' = {
   properties: {
     APPINSIGHTS_INSTRUMENTATIONKEY: appInsights.properties.InstrumentationKey
   }
-  dependsOn: [
-    appServiceSiteExtension
-  ]
-}
-
-resource appServiceSiteExtension 'Microsoft.Web/sites/siteextensions@2023-12-01' = {
-  parent: appService
-  name: 'Microsoft.ApplicationInsights.AzureWebSites'
-  dependsOn: [
-    appInsights
-  ]
 }
 
 resource appServiceAppSettings 'Microsoft.Web/sites/config@2023-12-01' = {
