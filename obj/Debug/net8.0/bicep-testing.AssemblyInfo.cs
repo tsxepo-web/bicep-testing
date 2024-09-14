@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("bicep-testing")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b27d10bf00eea39466e9b86e8c0528647dcc3b1a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+a64d9f6840024f06b92d1684e576164ff4a989c4")]
 [assembly: System.Reflection.AssemblyProductAttribute("bicep-testing")]
 [assembly: System.Reflection.AssemblyTitleAttribute("bicep-testing")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
